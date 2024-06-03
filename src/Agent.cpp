@@ -1,10 +1,12 @@
 #include <limits>
-#include <queue>
+#include <set>
 #include "include/Agent.hpp"
 
-void Agent::FindPortionPath(vector<unordered_map<Node*, Agent*>> space_time_map, const Graph& graph) {
+#define t 1
+
+void Agent::FindPortionPath(array<unordered_map<Node*, Agent*>, WINDOW_SIZE>& space_time_map, const Graph& graph) {
 	std::list<Node*> closed;
-	std::priority_queue<Node*, std::greater<Node>> open;
+	std::set<Node*, std::greater<Node>> open;
 
     // heuristicCache.clear();
 
@@ -18,45 +20,55 @@ void Agent::FindPortionPath(vector<unordered_map<Node*, Agent*>> space_time_map,
 	// 	}
 
     start->set_heuristic(heuristicCost);
-	open.push(start);
+	open.insert(start);
 
     while (!open.empty()) {
-        current = open.top();
+        current = *open.begin();
 
         if (current == goal) {
-            //
+            return;
         }
-        else {
-            open.pop();
-            closed.push_back(current);
+        
+        open.remove(current);
+        closed.push_back(current);
 
-            std::vector<Node*> neighbours = graph.GetNeighbors(current);
-            for (const auto& neighbour : neighbours) {
-                if (!isValidMove(current, neighbour))
-                    continue;
-                double nextStepCost = current->get_cost() + getMovementCost(current->get_x(), current->get_y(), 
-                                                                            neighbour->get_x(), neighbour->get_y());
-                if (nextStepCost < neighbour->get_cost()) {
-					if (open.contains(neighbour)) {
-						open.remove(neighbour);
-					}
-					if (closed.contains(neighbour)) {
-						closed.remove(neighbour);
-					}
-				}
-                
-                if (!open.contains(neighbour) && !closed.contains(neighbour)) {
-					neighbour.setCost(nextStepCost);
-					heuristicCost = getHeuristicCost(neighbour.getX(), neighbour.getY(), neighbour.getT(), tx, ty);
-					if (heuristicCost == null) {
-						heuristicCost = maxF();
-					}
-					neighbour.setHeuristic(heuristicCost);
-					neighbour.setParent(current);
-					open.add(neighbour);
-				}
+        std::vector<Node*> neighbours = graph.GetNeighbors(current);
+        for (const auto& neighbour : neighbours) {
 
+            // Node isn't free to be visited at t, ignore it
+            if (find(space_time_map[t].begin(), space_time_map[t].end(), neighbour) != space_time_map[t].end()) 
+                continue;
+
+            Edge* current_edge;
+            for (const auto& e : graph.adjacency_list.at(current)) {
+                if (e->destination == neighbour) {
+                    current_edge = e;
+                    break;
+                }
             }
+
+            double nextStepCost = current->get_cost() + current_edge->weight;
+            if (nextStepCost < neighbour->get_cost()) {
+                if (find(open.begin(), open.end(), neighbour) != open.end()) {
+                    open.remove(neighbour);
+                }
+                if (find(closed.begin(), closed.end(), neighbour) != closed.end()) {
+                    closed.remove(neighbour);
+                }
+            }
+
+            if (!open.contains(neighbour) && !closed.contains(neighbour)) {
+                neighbour.setCost(nextStepCost);
+                heuristicCost = getHeuristicCost(neighbour.getX(), neighbour.getY(), neighbour.getT(), tx, ty);
+                if (heuristicCost == null) {
+                    heuristicCost = maxF();
+                }
+                neighbour.setHeuristic(heuristicCost);
+                neighbour.setParent(current);
+                open.add(neighbour);
+            }
+
         }
+        
     }
 }

@@ -38,9 +38,9 @@ class Edge {
 public:
     Node* source;
     Node* destination;
-    int weight;
+    double weight;
     
-    Edge(Node* source, Node* destination, int weight) : source(source), destination(destination), weight(weight) {}
+    Edge(Node* source, Node* destination, double weight) : source(source), destination(destination), weight(weight) {}
 };
 
 // Класс для представления графа
@@ -56,7 +56,7 @@ public:
     }
     
     // Добавление ребра в граф
-    void add_edge(Node* source, Node* destination, int weight) {
+    void add_edge(Node* source, Node* destination, double weight) {
         Edge* edge = new Edge(source, destination, weight);
         adjacency_list[source].push_back(edge);
     }
@@ -77,7 +77,7 @@ public:
     vector<Node*> GetNeighbors(Node* node) const {
         vector<Node*> neighbors;
         if (adjacency_list.find(node) != adjacency_list.end()) {
-            vector<Edge*>& edges = adjacency_list[node];
+            vector<Edge*> edges = adjacency_list.at(node);
             for (Edge* edge : edges) {
                 neighbors.push_back(edge->destination);
             }
