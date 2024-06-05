@@ -15,8 +15,8 @@ public:
     int get_id() const { return id; }
     int get_x() const { return x; }
     int get_y() const { return y; }
-    int get_cost() const { return cost; }
-    int get_heuristic() const { return heuristic; }
+    double get_cost() const { return cost; }
+    double get_heuristic() const { return heuristic; }
 
     void set_cost(double cost_) { cost = cost_; }
     void set_heuristic(double heuristic_) { heuristic = heuristic_; }
@@ -26,11 +26,17 @@ public:
     }
 
 private:
+    Node* parent;
     int id;
     int x;
     int y;
-    double cost;
-    double heuristic;
+    int t;  // time step
+    double cost;  // cost from start
+    double heuristic;  // heuristic cost to goal
+
+    bool operator>(const Node& other) const {
+        return cost + heuristic > other.cost + other.heuristic;
+    }
 };
 
 // Класс для представления ребра графа

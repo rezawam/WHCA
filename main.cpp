@@ -24,15 +24,16 @@ int main() {
     
     // graph.PrintGraph();
 
-    std::cout << "NIGGER";
     vector<Agent*> v;
     WHCAPathFinder pf(graph, v);
     Agent a("a", node1, node5);
     Agent* b = &a;
-    // Path p = pf.FindPortionPath(b);
+    std::cout << "Finding partial path...\n";
+    Path p = pf.FindPortionPath(b);
+    std::cout << "Done!\n";
 
-    // for(const auto& n : p)
-    //     std::cout << n->get_id();
+    for(const auto& n : p)
+       std::cout << n->get_id();
     
     return 0;
 }
