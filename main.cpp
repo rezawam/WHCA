@@ -25,14 +25,15 @@ int main() {
     // graph.PrintGraph();
 
     vector<Agent*> v;
-    WHCAPathFinder pf(graph, v);
     Agent a("a", node1, node5);
     Agent* b = &a;
+    v.push_back(b);
+    WHCAPathFinder pf(graph, v);
     std::cout << "Finding partial path...\n";
     Path p = pf.FindPortionPath(b);
     std::cout << "Done!\n";
 
-    for(const auto& n : p)
+    for(const auto& n : a.portion_path)
        std::cout << n->get_id();
     
     return 0;

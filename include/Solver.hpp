@@ -25,5 +25,5 @@ public:
 	void FindPaths();
 
     double GetHeuristicCost(Node* start, Node* goal);
-	
+    bool IsValidMove(Node* node, Node* neighbour);
 };
