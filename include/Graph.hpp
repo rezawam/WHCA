@@ -15,11 +15,14 @@ public:
     int get_id() const { return id; }
     int get_x() const { return x; }
     int get_y() const { return y; }
+    int get_t() const { return t; }
     double get_cost() const { return cost; }
     double get_heuristic() const { return heuristic; }
+    Node* get_parent() const { return parent; }
 
     void set_cost(double cost_) { cost = cost_; }
     void set_heuristic(double heuristic_) { heuristic = heuristic_; }
+    void set_t(int t_) {t = t_; }
 
     bool operator<(const Node& node) {
         return (heuristic + cost < node.heuristic + node.cost);
@@ -78,6 +81,15 @@ public:
             }
             cout << endl;
         }
+    }
+
+    Node* GetNodeById(int id) {
+        for (Node* node : nodes) {
+            if (node->get_id() == id) {
+                return node;
+            }
+        }
+        return nullptr; 
     }
 
     vector<Node*> GetNeighbors(Node* node) const {

@@ -24,6 +24,6 @@ public:
     Path FindPortionPath(Agent* agent);
 	void FindPaths();
 
-    int GetHeuristicCost(Node* start, Node* goal);
+    double GetHeuristicCost(Node* start, Node* goal);
 	
 };
