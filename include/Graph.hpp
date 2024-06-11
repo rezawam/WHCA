@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <limits>
 
 using std::vector, std::unordered_map, std::cout, std::endl;
 
@@ -43,8 +44,8 @@ private:
     int x;
     int y;
     int t = 0;  // time step
-    double cost;  // cost from start
-    double heuristic;  // heuristic cost to goal
+    double cost = std::numeric_limits<double>::max();  // cost from start
+    double heuristic = std::numeric_limits<double>::max();  // heuristic cost to goal
 
     bool operator>(const Node& other) const {
         return cost + heuristic > other.cost + other.heuristic;
@@ -124,50 +125,40 @@ public:
 
     vector<Node*> GetNeighbors(Node* node)  {
         vector<Node*> neighbors;
-
-        // print_adjacency_list();
-        // node->PrintNode();
-
-        // for (const auto& i : adjacency_list) {
-        //     cout << i.first->get_id() << ": " << i.first << " ";
-        // }
-        // cout << "\n";
-        // cout << node << "\n";
-        if (adjacency_list.find(node) != adjacency_list.end()) {
-            // cout << "gud\n";
-            vector<Edge*> edges = adjacency_list.at(node);
-            for (Edge* edge : edges) {
-                neighbors.push_back(edge->destination);
-            }
-        }
-        return neighbors;
-
-        // for (const auto& i : adjacency_list) {
-        //     if (i.first->get_id() == node->get_id()) {
-        //         cout << "gud\n";
-                
-        //         Node* curr = GetNodeById(node->get_id());
-
-        //         vector<Edge*> edges = adjacency_list.at(curr);
-        //         for (Edge* edge : edges) {
-        //             neighbors.push_back(edge->destination);
-        //         }
+        
+        // if (adjacency_list.find(node) != adjacency_list.end()) {
+        //     vector<Edge*> edges = adjacency_list.at(node);
+        //     for (Edge* edge : edges) {
+        //         neighbors.push_back(edge->destination);
         //     }
         // }
         // return neighbors;
+
+        for (const auto& i : adjacency_list) {
+            if (i.first->get_id() == node->get_id()) {
+                Node* curr = GetNodeById(node->get_id());
+                vector<Edge*> edges = adjacency_list.at(curr);
+                for (Edge* edge : edges) {
+                    neighbors.push_back(edge->destination);
+                }
+            }
+        }
+        return neighbors;
     }
 
     double GetEdgeCost(Node* node1, Node* node2) {
-
-        // for (const auto& i : adjacency_list) {
-        //     cout << i.first->get_id() << ": " << i.first << " ";
+        // for (const auto& e : adjacency_list.at(node1)) {
+        //     if (e->destination == node2)
+        //         return e->weight;
         // }
-        // cout << "\n";
-        // cout << node1 << "\n";
-        for (const auto& e : adjacency_list.at(node1)) {
-            if (e->destination == node2)
-                return e->weight;
+         for (const auto& i : adjacency_list) {
+            if (i.first->get_id() == node1->get_id()) {
+                for (const auto& node : i.second)
+                    if (node->destination->get_id() == node2->get_id())
+                        return node->weight;
+            }
         }
+        return std::numeric_limits<double>::max(); // node is unreachable
     }
 
     void PrintGraph() {
