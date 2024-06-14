@@ -44,6 +44,7 @@ private:
     int x;
     int y;
     int t = 0;  // time step
+
     double cost = std::numeric_limits<double>::max();  // cost from start
     double heuristic = std::numeric_limits<double>::max();  // heuristic cost to goal
 
@@ -75,15 +76,56 @@ public:
             nodes.push_back(new Node(*node));
         }
 
-        for (const auto& pair : other.adjacency_list) { 
-            Node* new_node = GetNodeById(pair.first->get_id());
-            std::vector<Edge*> new_edges;
-            for (const auto& edge : pair.second) { 
-                new_edges.push_back(new Edge(*edge)); 
-                } 
-            adjacency_list[new_node] = new_edges; 
+        for (const auto& node : nodes) {
+            Node* old_node = other.GetNodeById(node->get_id());
+            vector<Edge*> old_edges = other.adjacency_list.at(old_node);
+            for (const auto& edge : old_edges) {
+                Edge* new_edge = new Edge(GetNodeById(edge->source->get_id()), GetNodeById(edge->destination->get_id()), edge->weight);
+                adjacency_list[node].push_back(new_edge);
+            }
         }
     }
+
+    // Graph(const Graph& other) {
+    //     nodes.reserve(other.nodes.size());
+    //     for (const auto& node : other.nodes) {
+    //         nodes.push_back(new Node(*node));
+    //     }
+
+    //     for (const auto& pair : other.adjacency_list) { 
+    //         Node* new_node = GetNodeById(pair.first->get_id());
+    //         std::vector<Edge*> new_edges;
+    //         for (const auto& edge : pair.second) { 
+    //             new_edges.push_back(new Edge(*edge)); 
+    //             } 
+    //         adjacency_list[new_node] = new_edges; 
+    //     }
+    // }
+
+    // Graph(const Graph& other) {
+    //     unordered_map<Node*, Node*> node_mapping;
+
+    //     // Copy nodes
+    //     for (Node* old_node : other.nodes) {
+    //         Node* new_node = new Node(*old_node);
+    //         nodes.push_back(new_node);
+    //         node_mapping[old_node] = new_node;
+    //     }
+
+    //     // Copy edges
+    //     for (auto& entry : other.adjacency_list) {
+    //         Node* old_node = entry.first;
+    //         vector<Edge*> old_edges = entry.second;
+    //         vector<Edge*> new_edges;
+    //         for (Edge* old_edge : old_edges) {
+    //             Node* new_source = node_mapping[old_edge->source];
+    //             Node* new_destination = node_mapping[old_edge->destination];
+    //             Edge* new_edge = new Edge(new_source, new_destination, old_edge->weight);
+    //             new_edges.push_back(new_edge);
+    //         }
+    //         adjacency_list[node_mapping[old_node]] = new_edges;
+    //     }
+    // }
 
     vector<Node*> nodes;
     unordered_map<Node*, vector<Edge*>> adjacency_list;
@@ -114,7 +156,7 @@ public:
         }
     }
 
-    Node* GetNodeById(int id) {
+    Node* GetNodeById(int id) const {
         for (Node* node : nodes) {
             if (node->get_id() == id) {
                 return node;
@@ -147,11 +189,7 @@ public:
     }
 
     double GetEdgeCost(Node* node1, Node* node2) {
-        // for (const auto& e : adjacency_list.at(node1)) {
-        //     if (e->destination == node2)
-        //         return e->weight;
-        // }
-         for (const auto& i : adjacency_list) {
+        for (const auto& i : adjacency_list) {
             if (i.first->get_id() == node1->get_id()) {
                 for (const auto& node : i.second)
                     if (node->destination->get_id() == node2->get_id())

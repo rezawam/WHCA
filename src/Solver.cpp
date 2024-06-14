@@ -5,7 +5,6 @@
 #include <cmath>
 #include <algorithm>
 
-// TO-DO: write logger
 
 template<
     class T,
@@ -46,7 +45,6 @@ void PrintOpenList(std::priority_queue<Node*, std::vector<Node*>, std::greater<N
 
 bool WHCAPathFinder::IsValidMove(Node* node, Node* neighbour) {
     int move_time = node->get_t() + 1;
-    // cout << "Move time for next:" << move_time << "\n";
     if (move_time < WINDOW_SIZE) {
         if (reservations[move_time].find(neighbour) == reservations[move_time].end())
             return 1;
@@ -70,8 +68,6 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
         }
     } 
 
-    // cout << space_time_map[0].nodes.data() << " " << space_time_map[1].nodes.data() << '\n';
-
     Node* startNode = space_time_map[0].GetNodeById(agent->start->get_id());
 
     startNode->set_cost(0);
@@ -81,17 +77,12 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
     open.push(startNode);
 
     while(!open.empty()) {
-
-        // PrintOpenList(open);
         Node* current = open.top();
-
-        // cout << "Time for current: " << current->get_t() << "\n";
 
         // If reached the goal at the end of the window:
         if (current == agent->goal) { // && current->get_t() == WINDOW_SIZE - 1
             // Start to recreate partial path from parents
             Path path;
-            // Node* node = space_time_map[current->get_t()].GetNodeById(agent->goal->get_id());
             Node* node = current;
             while (node != startNode) {
                 agent->portion_path.push_front(node);
@@ -104,7 +95,6 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
 
             agent->portion_path.push_front(agent->start);
             reservations[node->get_t()].insert({agent->start, agent});
-
             return path;
         }
 
@@ -112,34 +102,30 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
         closed.insert(current);
 
         // search through all the neighbours of the current node evaluating
-			// them as next steps
+		// them as next steps
 
-			vector<Node*> neighbours = space_time_map[0].GetNeighbors(current);
-			for (Node* neighbour : neighbours) {
-				if (!IsValidMove(current, neighbour))
-					continue;
-                    
-                double next_step_cost = current->get_cost() + space_time_map[0].GetEdgeCost(current, neighbour);
+        vector<Node*> neighbours = space_time_map[current->get_t() + 1].GetNeighbors(current);
+        for (Node* neighbour : neighbours) {
+            if (!IsValidMove(current, neighbour))
+                continue;
+                
+            double next_step_cost = current->get_cost() + graph.GetEdgeCost(current, neighbour);
 
-                if (next_step_cost <= neighbour->get_cost()) {
-					if (closed.find(neighbour) != closed.end()) {
-						closed.erase(closed.find(neighbour));
-					}
-				
-
-                if (closed.find(neighbour) == closed.end()) {
-					neighbour->set_cost(next_step_cost);
-					heuristicCost = GetHeuristicCost(neighbour, agent->goal);
-					// if (heuristicCost == null) {
-					// 	heuristicCost = maxF();
-					// }
-					neighbour->set_heuristic(heuristicCost);
-					neighbour->set_parent(current);
-					open.push(neighbour);
-				}
+            if (next_step_cost <= neighbour->get_cost()) {
+                if (closed.find(neighbour) != closed.end()) {
+                    closed.erase(closed.find(neighbour));
                 }
-
+                else
+                    neighbour->set_cost(next_step_cost);
+                    heuristicCost = GetHeuristicCost(neighbour, agent->goal);
+                    // if (heuristicCost == null) {
+                    // 	heuristicCost = maxF();
+                    // }
+                    neighbour->set_heuristic(heuristicCost);
+                    neighbour->set_parent(current);
+                    open.push(neighbour);
             }
+        }
     }
 
     Path empty;

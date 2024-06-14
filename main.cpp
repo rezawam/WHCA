@@ -17,6 +17,7 @@ int main() {
     graph.add_node(node3);
     graph.add_node(node4);
     graph.add_node(node5);
+    graph.add_node(node6);
     
     graph.add_edge(node1, node2, 1);
     graph.add_edge(node2, node3, 1);
@@ -25,7 +26,7 @@ int main() {
     graph.add_edge(node5, node6, 10000);
     graph.add_edge(node4, node6, 1000);
 
-    // graph.PrintGraph();
+   // graph.PrintGraph();
 
     vector<Agent*> v;
     Agent a("a", node1, node6);
@@ -40,6 +41,6 @@ int main() {
     for(const auto& n : a.portion_path)
        std::cout << n->get_id();
     cout << "\n";
-    
-    return 0;
+
+   return 0;
 }
