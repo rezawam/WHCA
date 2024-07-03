@@ -42,5 +42,11 @@ int main() {
        std::cout << n->get_id();
     cout << "\n";
 
+   // cout << "Graph 1: ";
+   // graph.PrintGraph();
+   // Graph graph_copy = graph;
+   // cout << "Graph 2: ";
+   // graph_copy.PrintGraph();
+
    return 0;
 }

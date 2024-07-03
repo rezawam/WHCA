@@ -65,7 +65,7 @@ public:
     Edge(Node* source, Node* destination, double weight) : source(source), destination(destination), weight(weight) {}
 };
 
-// Класс для представления графа
+
 class Graph {
 public:
 
@@ -78,10 +78,13 @@ public:
 
         for (const auto& node : nodes) {
             Node* old_node = other.GetNodeById(node->get_id());
-            vector<Edge*> old_edges = other.adjacency_list.at(old_node);
-            for (const auto& edge : old_edges) {
-                Edge* new_edge = new Edge(GetNodeById(edge->source->get_id()), GetNodeById(edge->destination->get_id()), edge->weight);
-                adjacency_list[node].push_back(new_edge);
+            // If there is a way from node to somewhere else
+            if (other.adjacency_list.find(old_node) != other.adjacency_list.end()) {
+                vector<Edge*> old_edges = other.adjacency_list.at(old_node);
+                for (const auto& edge : old_edges) {
+                    Edge* new_edge = new Edge(node, GetNodeById(edge->destination->get_id()), edge->weight);
+                    adjacency_list[node].push_back(new_edge);
+                }
             }
         }
     }
@@ -202,14 +205,15 @@ public:
     void PrintGraph() {
         cout << "Nodes in the graph:" << endl;
         for (Node* node : nodes) {
-            cout << "Node " << node->get_id() << endl;
+            cout << "Node " << node->get_id() << " at " << node << endl;
         }
         cout << "Edges in the graph:" << endl;
         for (auto& pair : adjacency_list) {
             Node* node = pair.first;
             vector<Edge*>& edges = pair.second;
             for (Edge* edge : edges) {
-                cout << edge->source->get_id() << " -> " << edge->destination->get_id() << ", weight: " << edge->weight << endl;
+                cout << edge->source->get_id() << " (" << edge->source << ") -> " << 
+                edge->destination->get_id() << " (" << edge->destination << "), weight: " << edge->weight << " at " << edge << endl;
             }
         }
     }

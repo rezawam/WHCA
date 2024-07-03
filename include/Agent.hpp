@@ -1,5 +1,4 @@
 #pragma once
-#define WINDOW_SIZE 16
 
 #include <list>
 #include <array>

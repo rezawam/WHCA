@@ -80,7 +80,7 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
         Node* current = open.top();
 
         // If reached the goal at the end of the window:
-        if (current == agent->goal) { // && current->get_t() == WINDOW_SIZE - 1
+        if (current->get_id() == agent->goal->get_id()) { // && current->get_t() == WINDOW_SIZE - 1
             // Start to recreate partial path from parents
             Path path;
             Node* node = current;

@@ -1,4 +1,5 @@
 #pragma once
+#define WINDOW_SIZE 8 
 
 #include "Agent.hpp"
 
