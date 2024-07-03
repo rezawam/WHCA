@@ -5,7 +5,7 @@
         "name": "Run and debug active file",
         "type": "cppdbg",
         "request": "launch",
-        "program": "${workspaceFolder}\\build\\Coopirative_Pathfinding.exe",
+        "program": "${workspaceFolder}\\build\\Cooperative_Pathfinding.exe",
         "cwd": "${workspaceFolder}\\build",
         "stopAtEntry": true,
         "MIMode": "gdb",

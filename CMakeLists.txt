@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 # The project name
-project(Coopirative_Pathfinding)
+project(Cooperative_Pathfinding)
 
 # detect operating system
 message(STATUS "We are on a ${CMAKE_SYSTEM_NAME} system")

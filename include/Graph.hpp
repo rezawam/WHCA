@@ -89,47 +89,6 @@ public:
         }
     }
 
-    // Graph(const Graph& other) {
-    //     nodes.reserve(other.nodes.size());
-    //     for (const auto& node : other.nodes) {
-    //         nodes.push_back(new Node(*node));
-    //     }
-
-    //     for (const auto& pair : other.adjacency_list) { 
-    //         Node* new_node = GetNodeById(pair.first->get_id());
-    //         std::vector<Edge*> new_edges;
-    //         for (const auto& edge : pair.second) { 
-    //             new_edges.push_back(new Edge(*edge)); 
-    //             } 
-    //         adjacency_list[new_node] = new_edges; 
-    //     }
-    // }
-
-    // Graph(const Graph& other) {
-    //     unordered_map<Node*, Node*> node_mapping;
-
-    //     // Copy nodes
-    //     for (Node* old_node : other.nodes) {
-    //         Node* new_node = new Node(*old_node);
-    //         nodes.push_back(new_node);
-    //         node_mapping[old_node] = new_node;
-    //     }
-
-    //     // Copy edges
-    //     for (auto& entry : other.adjacency_list) {
-    //         Node* old_node = entry.first;
-    //         vector<Edge*> old_edges = entry.second;
-    //         vector<Edge*> new_edges;
-    //         for (Edge* old_edge : old_edges) {
-    //             Node* new_source = node_mapping[old_edge->source];
-    //             Node* new_destination = node_mapping[old_edge->destination];
-    //             Edge* new_edge = new Edge(new_source, new_destination, old_edge->weight);
-    //             new_edges.push_back(new_edge);
-    //         }
-    //         adjacency_list[node_mapping[old_node]] = new_edges;
-    //     }
-    // }
-
     vector<Node*> nodes;
     unordered_map<Node*, vector<Edge*>> adjacency_list;
     

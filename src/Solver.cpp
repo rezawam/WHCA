@@ -104,42 +104,40 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
         // search through all the neighbours of the current node evaluating
 		// them as next steps
 
-        vector<Node*> neighbours = space_time_map[current->get_t() + 1].GetNeighbors(current);
+        // vector<Node*> neighbours = space_time_map[current->get_t() + 1].GetNeighbors(current);
+        vector<Node*> neighbours = space_time_map[0].GetNeighbors(current);
         for (Node* neighbour : neighbours) {
             if (!IsValidMove(current, neighbour))
                 continue;
                 
+            cout << "current: " << current->get_id() << ", neighbour: " << neighbour->get_id() << endl;
             double next_step_cost = current->get_cost() + graph.GetEdgeCost(current, neighbour);
 
             if (next_step_cost <= neighbour->get_cost()) {
                 if (closed.find(neighbour) != closed.end()) {
                     closed.erase(closed.find(neighbour));
                 }
-                else
+                else {
                     neighbour->set_cost(next_step_cost);
                     heuristicCost = GetHeuristicCost(neighbour, agent->goal);
-                    // if (heuristicCost == null) {
-                    // 	heuristicCost = maxF();
-                    // }
                     neighbour->set_heuristic(heuristicCost);
                     neighbour->set_parent(current);
                     open.push(neighbour);
+                }
             }
         }
     }
-
     Path empty;
     std::cout << "Path is empty you nigger\n";
     return empty;
-
 }
 
-void WHCAPathFinder::FindPaths() {
-    bool all_agents_found_path = false;
+// void WHCAPathFinder::FindPaths() {
+//     bool all_agents_found_path = false;
 
-    while(!all_agents_found_path) {
-        for (auto& agent : agents) {
-            FindPortionPath(agent);
-        }
-    }
-}
+//     while(!all_agents_found_path) {
+//         for (auto& agent : agents) {
+//             FindPortionPath(agent);
+//         }
+//     }
+// }

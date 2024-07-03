@@ -23,8 +23,8 @@ int main() {
     graph.add_edge(node2, node3, 1);
     graph.add_edge(node2, node4, 1);
     graph.add_edge(node3, node5, 1);
-    graph.add_edge(node5, node6, 10000);
-    graph.add_edge(node4, node6, 1000);
+    graph.add_edge(node4, node6, 100000);
+    graph.add_edge(node5, node6, 1000);
 
    // graph.PrintGraph();
 
