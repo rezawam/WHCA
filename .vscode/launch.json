@@ -7,7 +7,7 @@
         "request": "launch",
         "program": "${workspaceFolder}\\build\\Cooperative_Pathfinding.exe",
         "cwd": "${workspaceFolder}\\build",
-        "stopAtEntry": true,
+        "stopAtEntry": false,
         "MIMode": "gdb",
         "targetArchitecture": "x64",
         "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",

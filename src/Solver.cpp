@@ -104,8 +104,8 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
         // search through all the neighbours of the current node evaluating
 		// them as next steps
 
-        // vector<Node*> neighbours = space_time_map[current->get_t() + 1].GetNeighbors(current);
-        vector<Node*> neighbours = space_time_map[0].GetNeighbors(current);
+        vector<Node*> neighbours = space_time_map[current->get_t() + 1].GetNeighbors(current);
+        // vector<Node*> neighbours = space_time_map[0].GetNeighbors(current);
         for (Node* neighbour : neighbours) {
             if (!IsValidMove(current, neighbour))
                 continue;
