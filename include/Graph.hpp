@@ -11,19 +11,31 @@ using std::vector, std::unordered_map, std::cout, std::endl;
 class Node {
 public:
     Node() {}
-    Node(int id_, int x_, int y_) : id(id_), x(x_), y(y_) {};
+    Node(int id_, int x_, int y_) : id(id_), x(x_), y(y_), parent(nullptr) {};
 
     int get_id() const { return id; }
     int get_x() const { return x; }
     int get_y() const { return y; }
-    int get_t() const { return t; }
+
+    int count_parents() const {
+        int number_of_parents = 0;
+        Node* parent = get_parent();
+        while (parent != nullptr) {
+            number_of_parents++;
+            parent = parent->get_parent();
+        }
+        return number_of_parents;
+    }
+
+
+    // int get_t() const { return t; }
     double get_cost() const { return cost; }
     double get_heuristic() const { return heuristic; }
     Node* get_parent() const { return parent; }
 
     void set_cost(double cost_) { cost = cost_; }
     void set_heuristic(double heuristic_) { heuristic = heuristic_; }
-    void set_t(int t_) {t = t_; }
+    // void set_t(int t_) {t = t_; }
     void set_parent(Node* parent_) { parent = parent_; }
 
     bool operator<(const Node& node) {
@@ -31,11 +43,11 @@ public:
     }
 
     bool operator==(const Node& other) const {
-        return (id == other.id) && (x == other.x) && (y == other.y) && (t == other.t);
+        return (id == other.id) && (x == other.x) && (y == other.y);
     }
 
     void PrintNode() {
-        std::cout << "id: " << id << " x: " << x << " y: " << y << " t: " << t << " cost: " << cost << " heur: " << heuristic << "\n";
+        std::cout << "id: " << id << " x: " << x << " y: " << y  << " cost: " << cost << " heur: " << heuristic << "\n";
     }
 
 private:
@@ -43,7 +55,7 @@ private:
     int id;
     int x;
     int y;
-    int t = 0;  // time step
+    // int t = 0;  // time step
 
     double cost = std::numeric_limits<double>::max();  // cost from start
     double heuristic = std::numeric_limits<double>::max();  // heuristic cost to goal
