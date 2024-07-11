@@ -109,8 +109,10 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
 
         vector<Node*> neighbours = graph.GetNeighbors(current);
         for (Node* neighbour : neighbours) {
-            if (!IsValidMove(neighbour, current_step + 1))
+            if (!IsValidMove(neighbour, current_step + 1)) {
+                current->set_parent(current); // We wait
                 continue;
+            }
                 
             cout << "current: " << current->get_id() << ", neighbour: " << neighbour->get_id() << endl;
             double next_step_cost = current->get_cost() + graph.GetEdgeCost(current, neighbour);
@@ -130,7 +132,7 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
         }
     }
     Path empty;
-    std::cout << "Path is empty you nigger\n";
+    std::cout << "Path is empty\n";
     return empty;
 }
 
