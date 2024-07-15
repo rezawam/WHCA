@@ -85,7 +85,7 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
             // Start to recreate partial path from parents
             Path path;
             Node* node = current;
-            int path_size = current->count_parents();
+            int path_size = current->count_parents() + 1;
             while (node != startNode) {
                 path_size--;
                 agent->portion_path.push_front(node);
@@ -98,6 +98,13 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
 
             agent->portion_path.push_front(agent->start);
             reservations[0].insert({agent->start, agent});
+
+            for (int i = 0; i < WINDOW_SIZE; i++) {
+                cout << "Step " << i << endl;
+                for (const auto& reservation : reservations[i]) {
+                    cout << "At node " << reservation.first->get_id() << " is agent " << reservation.second->name << endl;
+                }
+            }
             return path;
         }
 
@@ -114,7 +121,7 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
                 continue;
             }
                 
-            cout << "current: " << current->get_id() << ", neighbour: " << neighbour->get_id() << endl;
+            //cout << "current: " << current->get_id() << ", neighbour: " << neighbour->get_id() << endl;
             double next_step_cost = current->get_cost() + graph.GetEdgeCost(current, neighbour);
 
             if (next_step_cost <= neighbour->get_cost()) {
