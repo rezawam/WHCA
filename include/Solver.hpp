@@ -20,7 +20,7 @@ private:
 
 
 public:
-    WHCAPathFinder(Graph& graph_, std::vector<Agent*>& agents_) : agents(agents_), graph(graph_) {}
+    WHCAPathFinder(Graph& graph, std::vector<Agent*>& agents) : graph(graph), agents(agents){}
 
     Path FindPortionPath(Agent* agent);
 	void FindPaths();

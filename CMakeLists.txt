@@ -15,6 +15,7 @@ set(${PROJECT_NAME}_VERSION "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
 
+
 include_directories(include)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
@@ -22,3 +23,9 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 # set(SOURCES main.cpp src/Solver.cpp include/Agent.hpp include/Graph.hpp include/Solver.hpp)
 add_executable(${PROJECT_NAME} main.cpp ${SOURCES})
 # target_include_directories(${PROJECT_NAME} PRIVATE include)
+
+if(MSVC)
+  target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+else()
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()

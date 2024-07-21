@@ -63,16 +63,27 @@ int main() {
 
 
     vector<Agent*> v;
-    Agent a("a", node1, node8);
+    Agent a("b", node1, node8);
     Agent* b = &a;
+
+    Agent c("c", node1, node5);
+    Agent* d = &c;
+
     v.push_back(b);
+    v.push_back(d);
     WHCAPathFinder pf(graph, v);
-    std::cout << "Finding partial path...\n";
-    Path p = pf.FindPortionPath(b);
+
+    std::cout << "Finding paths...\n";
+    pf.FindPaths();
     std::cout << "Done!\n";
 
-    cout << "Curernt portion path is: ";
+    cout << "Curernt portion path for a is: ";
     for(const auto& n : a.portion_path)
+       std::cout << n->get_id();
+    cout << "\n";
+
+    cout << "Curernt portion path for c is: ";
+    for(const auto& n : c.portion_path)
        std::cout << n->get_id();
     cout << "\n";
 

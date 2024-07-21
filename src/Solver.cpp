@@ -105,6 +105,8 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
                     cout << "At node " << reservation.first->get_id() << " is agent " << reservation.second->name << endl;
                 }
             }
+
+            std::cout << "Found partial path for " << agent->name << endl;
             return path;
         }
 
@@ -143,12 +145,18 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
     return empty;
 }
 
-// void WHCAPathFinder::FindPaths() {
-//     bool all_agents_found_path = false;
+void WHCAPathFinder::FindPaths() {
+    bool all_agents_found_path = false;
 
-//     while(!all_agents_found_path) {
-//         for (auto& agent : agents) {
-//             FindPortionPath(agent);
-//         }
-//     }
-// }
+    while(!all_agents_found_path) {
+        for (auto& agent : agents) {
+            FindPortionPath(agent);
+        }
+
+        for (const auto& agent : agents) {
+            if (agent->isAtGoal() == false)
+                break;
+            all_agents_found_path = true;
+        }
+    }
+}

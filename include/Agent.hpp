@@ -21,6 +21,10 @@ public:
 
     Path path;
     Path portion_path;
-    Node* start, *goal, *next, *current, *prev;
     string name;
+    Node* start, *goal, *next, *current, *prev;
+
+    bool isAtGoal() {
+        return (start == goal);
+    }
 };
