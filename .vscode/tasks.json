@@ -8,7 +8,7 @@
                 "/Zi",
                 "/EHsc",
                 "/nologo",
-                "/Fe${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "/Fe${fileDirname}/${fileBasenameNoExtension}",
                 "${file}"
             ],
             "options": {
@@ -28,7 +28,7 @@
             "command": "make", // Could be any other shell command
             "type": "shell",
             "options": {
-                "cwd": "${workspaceFolder}\\build"
+                "cwd": "${workspaceFolder}/build"
             },
         }
     ],

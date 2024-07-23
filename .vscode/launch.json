@@ -5,12 +5,12 @@
         "name": "Run and debug active file",
         "type": "cppdbg",
         "request": "launch",
-        "program": "${workspaceFolder}\\build\\Cooperative_Pathfinding.exe",
-        "cwd": "${workspaceFolder}\\build",
+        "program": "${workspaceFolder}/build/Cooperative_Pathfinding",
+        "cwd": "${workspaceFolder}/build",
         "stopAtEntry": false,
         "MIMode": "gdb",
         "targetArchitecture": "x64",
-        "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",
+        "miDebuggerPath": "/usr/bin/gdb",
         "setupCommands": [
             {
                 "description": "Enable pretty-printing for gdb",

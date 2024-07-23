@@ -11,19 +11,46 @@ using std::vector, std::unordered_map, std::cout, std::endl;
 class Node {
 public:
     Node() {}
-    Node(int id_, int x_, int y_) : id(id_), x(x_), y(y_) {};
+    Node(int id_, int x_, int y_) : id(id_), x(x_), y(y_), parent(nullptr) {};
+
+    void swap(Node other) {
+        using std::swap;
+        swap(id, other.id);
+        swap(x, other.x);
+        swap(y, other.y);
+        swap(parent, other.parent);
+        swap(cost, other.cost);
+        swap(heuristic, other.heuristic);
+    }
+
+    Node(const Node&) = default;
+
+    Node& operator=(Node other) {
+        swap(other);
+        return *this;
+    }
 
     int get_id() const { return id; }
     int get_x() const { return x; }
     int get_y() const { return y; }
-    int get_t() const { return t; }
+
+    int count_parents() const {
+        int number_of_parents = 0;
+        Node* parent = get_parent();
+        while (parent != nullptr) {
+            number_of_parents++;
+            parent = parent->get_parent();
+        }
+        return number_of_parents;
+    }
+
     double get_cost() const { return cost; }
     double get_heuristic() const { return heuristic; }
     Node* get_parent() const { return parent; }
 
     void set_cost(double cost_) { cost = cost_; }
     void set_heuristic(double heuristic_) { heuristic = heuristic_; }
-    void set_t(int t_) {t = t_; }
+    // void set_t(int t_) {t = t_; }
     void set_parent(Node* parent_) { parent = parent_; }
 
     bool operator<(const Node& node) {
@@ -31,19 +58,19 @@ public:
     }
 
     bool operator==(const Node& other) const {
-        return (id == other.id) && (x == other.x) && (y == other.y) && (t == other.t);
+        return (id == other.id) && (x == other.x) && (y == other.y);
     }
 
     void PrintNode() {
-        std::cout << "id: " << id << " x: " << x << " y: " << y << " t: " << t << " cost: " << cost << " heur: " << heuristic << "\n";
+        std::cout << "id: " << id << " x: " << x << " y: " << y  << " cost: " << cost << " heur: " << heuristic << "\n";
     }
 
 private:
-    Node* parent;
     int id;
     int x;
     int y;
-    int t = 0;  // time step
+    Node* parent;
+    // int t = 0;  // time step
 
     double cost = std::numeric_limits<double>::max();  // cost from start
     double heuristic = std::numeric_limits<double>::max();  // heuristic cost to goal
@@ -51,7 +78,6 @@ private:
     bool operator>(const Node& other) const {
         return cost + heuristic > other.cost + other.heuristic;
     }
-
     
 };
 
@@ -68,29 +94,29 @@ public:
 
 class Graph {
 public:
-
-    Graph() { };
-    Graph(const Graph& other) {
-        nodes.reserve(other.nodes.size());
-        for (const auto& node : other.nodes) {
-            nodes.push_back(new Node(*node));
-        }
-
-        for (const auto& node : nodes) {
-            Node* old_node = other.GetNodeById(node->get_id());
-            // If there is a way from node to somewhere else
-            if (other.adjacency_list.find(old_node) != other.adjacency_list.end()) {
-                vector<Edge*> old_edges = other.adjacency_list.at(old_node);
-                for (const auto& edge : old_edges) {
-                    Edge* new_edge = new Edge(node, GetNodeById(edge->destination->get_id()), edge->weight);
-                    adjacency_list[node].push_back(new_edge);
-                }
-            }
-        }
-    }
-
     vector<Node*> nodes;
     unordered_map<Node*, vector<Edge*>> adjacency_list;
+
+    Graph() = default;
+    // Graph(const Graph& other) {
+    //     nodes.reserve(other.nodes.size());
+    //     for (const auto& node : other.nodes) {
+    //         nodes.push_back(new Node(*node));
+    //     }
+
+    //     for (const auto& node : nodes) {
+    //         Node* old_node = other.GetNodeById(node->get_id());
+    //         // If there is a way from node to somewhere else
+    //         if (other.adjacency_list.find(old_node) != other.adjacency_list.end()) {
+    //             vector<Edge*> old_edges = other.adjacency_list.at(old_node);
+    //             for (const auto& edge : old_edges) {
+    //                 Edge* new_edge = new Edge(node, GetNodeById(edge->destination->get_id()), edge->weight);
+    //                 adjacency_list[node].push_back(new_edge);
+    //             }
+    //         }
+    //     }
+    // }
+    
     
     // Добавление вершины в граф
     void add_node(Node* node) {
@@ -129,14 +155,6 @@ public:
 
     vector<Node*> GetNeighbors(Node* node)  {
         vector<Node*> neighbors;
-        
-        // if (adjacency_list.find(node) != adjacency_list.end()) {
-        //     vector<Edge*> edges = adjacency_list.at(node);
-        //     for (Edge* edge : edges) {
-        //         neighbors.push_back(edge->destination);
-        //     }
-        // }
-        // return neighbors;
 
         for (const auto& i : adjacency_list) {
             if (i.first->get_id() == node->get_id()) {
@@ -168,12 +186,17 @@ public:
         }
         cout << "Edges in the graph:" << endl;
         for (auto& pair : adjacency_list) {
-            Node* node = pair.first;
             vector<Edge*>& edges = pair.second;
             for (Edge* edge : edges) {
                 cout << edge->source->get_id() << " (" << edge->source << ") -> " << 
                 edge->destination->get_id() << " (" << edge->destination << "), weight: " << edge->weight << " at " << edge << endl;
             }
+        }
+    }
+
+    void ClearParents() {
+        for (const auto& node : nodes) {
+            node->set_parent(nullptr);
         }
     }
 };
