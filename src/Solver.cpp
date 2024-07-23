@@ -64,6 +64,8 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
     //     }
     // } 
 
+    graph.ClearParents();
+
     Node* startNode = graph.GetNodeById(agent->start->get_id());
 
     startNode->set_cost(0);
@@ -99,13 +101,6 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
             agent->portion_path.push_front(agent->start);
             reservations[0].insert({agent->start, agent});
 
-            for (int i = 0; i < WINDOW_SIZE; i++) {
-                cout << "Step " << i << endl;
-                for (const auto& reservation : reservations[i]) {
-                    cout << "At node " << reservation.first->get_id() << " is agent " << reservation.second->name << endl;
-                }
-            }
-
             std::cout << "Found partial path for " << agent->name << endl;
             return path;
         }
@@ -119,7 +114,9 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
         vector<Node*> neighbours = graph.GetNeighbors(current);
         for (Node* neighbour : neighbours) {
             if (!IsValidMove(neighbour, current_step + 1)) {
-                current->set_parent(current); // We wait
+                static Node current_copy = *current;
+                current_copy.set_parent(current); // We wait
+                open.push(&current_copy);
                 continue;
             }
                 

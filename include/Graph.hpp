@@ -13,6 +13,23 @@ public:
     Node() {}
     Node(int id_, int x_, int y_) : id(id_), x(x_), y(y_), parent(nullptr) {};
 
+    void swap(Node other) {
+        using std::swap;
+        swap(id, other.id);
+        swap(x, other.x);
+        swap(y, other.y);
+        swap(parent, other.parent);
+        swap(cost, other.cost);
+        swap(heuristic, other.heuristic);
+    }
+
+    Node(const Node&) = default;
+
+    Node& operator=(Node other) {
+        swap(other);
+        return *this;
+    }
+
     int get_id() const { return id; }
     int get_x() const { return x; }
     int get_y() const { return y; }
@@ -61,7 +78,6 @@ private:
     bool operator>(const Node& other) const {
         return cost + heuristic > other.cost + other.heuristic;
     }
-
     
 };
 
@@ -175,6 +191,12 @@ public:
                 cout << edge->source->get_id() << " (" << edge->source << ") -> " << 
                 edge->destination->get_id() << " (" << edge->destination << "), weight: " << edge->weight << " at " << edge << endl;
             }
+        }
+    }
+
+    void ClearParents() {
+        for (const auto& node : nodes) {
+            node->set_parent(nullptr);
         }
     }
 };

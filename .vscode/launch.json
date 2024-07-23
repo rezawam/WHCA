@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+        "name": "Run and debug active file",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/build/Cooperative_Pathfinding",
+        "cwd": "${workspaceFolder}/build",
+        "stopAtEntry": false,
+        "MIMode": "gdb",
+        "targetArchitecture": "x64",
+        "miDebuggerPath": "/usr/bin/gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ],
+        "logging": {
+                "engineLogging": true
+        },
+         "preLaunchTask": "make"
+    }
+    ],
+}
