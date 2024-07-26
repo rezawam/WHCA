@@ -65,6 +65,8 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
     // } 
 
     graph.ClearParents();
+    graph.SetInfHeuristic();
+    graph.SetInfCost();
 
     Node* startNode = graph.GetNodeById(agent->start->get_id());
 
@@ -101,7 +103,7 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
             agent->portion_path.push_front(agent->start);
             reservations[0].insert({agent->start, agent});
 
-            std::cout << "Found partial path for " << agent->name << endl;
+            //std::cout << "Found partial path for " << agent->name << endl;
             return path;
         }
 
@@ -138,7 +140,7 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
         }
     }
     Path empty;
-    std::cout << "Path is empty\n";
+    //std::cout << "Path is empty\n";
     return empty;
 }
 
@@ -151,8 +153,11 @@ void WHCAPathFinder::FindPaths() {
         }
 
         for (const auto& agent : agents) {
-            if (agent->isAtGoal() == false)
+            if (!agent->isAtGoal()) {
+                all_agents_found_path = false;
                 break;
+            }
+            agents.erase(find(agents.begin(), agents.end(), agent));
             all_agents_found_path = true;
         }
     }

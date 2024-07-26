@@ -195,8 +195,18 @@ public:
     }
 
     void ClearParents() {
-        for (const auto& node : nodes) {
+        for (auto& node : nodes) {
             node->set_parent(nullptr);
         }
+    }
+
+    void SetInfHeuristic() {
+        for (auto& node : nodes) 
+            node->set_heuristic(std::numeric_limits<double>::max());
+    }
+
+    void SetInfCost() {
+        for (auto& node : nodes)
+            node->set_cost(std::numeric_limits<double>::max());
     }
 };

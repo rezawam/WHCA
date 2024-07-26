@@ -85,14 +85,15 @@ int main() {
 
 
     vector<Agent*> v;
-    Agent a("b", node1, node4);
+    Agent a("b", node1, node5);
     Agent* b = &a;
 
-    Agent c("c", node2, node5);
+    Agent c("c", node2, node4);
     Agent* d = &c;
 
-    v.push_back(b);
     v.push_back(d);
+    v.push_back(b);
+
     WHCAPathFinder pf(graph, v);
 
     std::cout << "Finding paths...\n";
