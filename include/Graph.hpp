@@ -27,6 +27,7 @@ public:
 
     Node& operator=(Node other) {
         swap(other);
+        cout << "Copied node" << endl;
         return *this;
     }
 
@@ -98,25 +99,6 @@ public:
     unordered_map<Node*, vector<Edge*>> adjacency_list;
 
     Graph() = default;
-    // Graph(const Graph& other) {
-    //     nodes.reserve(other.nodes.size());
-    //     for (const auto& node : other.nodes) {
-    //         nodes.push_back(new Node(*node));
-    //     }
-
-    //     for (const auto& node : nodes) {
-    //         Node* old_node = other.GetNodeById(node->get_id());
-    //         // If there is a way from node to somewhere else
-    //         if (other.adjacency_list.find(old_node) != other.adjacency_list.end()) {
-    //             vector<Edge*> old_edges = other.adjacency_list.at(old_node);
-    //             for (const auto& edge : old_edges) {
-    //                 Edge* new_edge = new Edge(node, GetNodeById(edge->destination->get_id()), edge->weight);
-    //                 adjacency_list[node].push_back(new_edge);
-    //             }
-    //         }
-    //     }
-    // }
-    
     
     // Добавление вершины в граф
     void add_node(Node* node) {

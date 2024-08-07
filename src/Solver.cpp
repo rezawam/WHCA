@@ -44,7 +44,7 @@ void PrintOpenList(std::priority_queue<Node*, std::vector<Node*>, std::greater<N
 }
 
 bool WHCAPathFinder::IsValidMove(Node* neighbour, int step) {
-    if (reservations[step].find(neighbour) == reservations[step].end())
+    if (reservations[step].find(neighbour->get_id()) == reservations[step].end())
         return 1;
     return 0;
 }
@@ -53,17 +53,7 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
     std::priority_queue<Node*, std::vector<Node*>, std::greater<Node*>> open;
     std::unordered_set<Node*> closed;
 
-    // std::vector<Graph> space_time_map(WINDOW_SIZE);
-    // for (int i = 0; i < WINDOW_SIZE; i++) {
-    //     Graph copy_graph = graph;
-    //     space_time_map[i] = copy_graph;
-    //     for (auto& node : space_time_map[i].nodes) {
-    //         node->set_cost(std::numeric_limits<double>::max()); 
-    //         node->set_heuristic(std::numeric_limits<double>::max()); 
-    //         node->set_t(i);
-    //     }
-    // } 
-
+    waiting_list.clear();
     graph.ClearParents();
     graph.SetInfHeuristic();
     graph.SetInfCost();
@@ -94,16 +84,16 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
                 path_size--;
                 agent->portion_path.push_front(node);
                 // Make reservations
-                reservations[path_size].insert({node, agent});
+                reservations[path_size].insert({node->get_id(), agent});
                 node = node->get_parent();
                 if (node == nullptr)
                     std::cout << "target = null";
             }
 
             agent->portion_path.push_front(agent->start);
-            reservations[0].insert({agent->start, agent});
+            reservations[0].insert({agent->start->get_id(), agent});
 
-            //std::cout << "Found partial path for " << agent->name << endl;
+            std::cout << "Found partial path for " << agent->name << endl;
             return path;
         }
 
@@ -116,9 +106,9 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
         vector<Node*> neighbours = graph.GetNeighbors(current);
         for (Node* neighbour : neighbours) {
             if (!IsValidMove(neighbour, current_step + 1)) {
-                static Node current_copy = *current;
-                current_copy.set_parent(current); // We wait
-                open.push(&current_copy);
+                waiting_list.push_back(*current);
+                waiting_list.back().set_parent(current);
+                open.push(&waiting_list.back());
                 continue;
             }
                 
@@ -140,7 +130,7 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
         }
     }
     Path empty;
-    //std::cout << "Path is empty\n";
+    std::cout << "Path is empty\n";
     return empty;
 }
 
@@ -149,6 +139,7 @@ void WHCAPathFinder::FindPaths() {
 
     while(!all_agents_found_path) {
         for (auto& agent : agents) {
+            cout << "Find partial path for " << agent->name << endl;
             FindPortionPath(agent);
         }
 

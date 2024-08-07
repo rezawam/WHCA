@@ -25,6 +25,6 @@ public:
     Node* start, *goal, *next, *current, *prev;
 
     bool isAtGoal() {
-        return (portion_path.back() == goal);
+        return (portion_path.back()->get_id() == goal->get_id());
     }
 };
