@@ -7,7 +7,7 @@ void CheckPathsEquality(const Path& result, const Path& expected) {
     auto it1 = result.begin();
     auto it2 = expected.begin();
     while (it1 != result.end() && it2 != expected.end()) {
-        ASSERT_EQ((*it1)->get_id(), (*it2)->get_id()) << "Paths are different";
+        ASSERT_EQ(*it1, *it2) << "Paths are different";
         ++it1;
         ++it2;
     }
@@ -43,7 +43,7 @@ TEST(SingleAgentTest, TwoNodesInGraph) {
   WHCAPathFinder pf(graph, v);
   pf.FindPortionPath(&a);
 
-  std::list<Node*> expected_path = { node1, node2 };
+  Path expected_path = { 1, 2 };
 
   ASSERT_EQ(a.portion_path.size(), expected_path.size()) << "Paths are of unequal length";
   CheckPathsEquality(a.portion_path, expected_path);
@@ -74,7 +74,7 @@ TEST(SingleAgentTest, TwoPathsDifferentEdgeWeights) {
   WHCAPathFinder pf(graph, v);
   pf.FindPortionPath(&a);
 
-  std::list<Node*> expected_path = { node1, node2, node4, };
+  Path expected_path = { 1, 2, 4 };
 
   ASSERT_EQ(a.portion_path.size(), expected_path.size()) << "Paths are of unequal length";
   CheckPathsEquality(a.portion_path, expected_path);
@@ -105,7 +105,7 @@ TEST(SingleAgentTest, TwoPathsDifferentHeuristics) {
   WHCAPathFinder pf(graph, v);
   pf.FindPortionPath(&a);
 
-  std::list<Node*> expected_path = { node1, node3, node4, };
+  Path expected_path = { 1, 3, 4, };
 
   ASSERT_EQ(a.portion_path.size(), expected_path.size()) << "Paths are of unequal length";
   CheckPathsEquality(a.portion_path, expected_path);
@@ -147,7 +147,7 @@ TEST(SingleAgentTest, LargeGraph) {
   WHCAPathFinder pf(graph, v);
   pf.FindPortionPath(&a);
 
-  std::list<Node*> expected_path = { node1, node2, node4, node6, node8 };
+  Path expected_path = { 1, 2, 4, 6, 8 };
 
   ASSERT_EQ(a.portion_path.size(), expected_path.size()) << "Paths are of unequal length";
   CheckPathsEquality(a.portion_path, expected_path);
@@ -176,7 +176,7 @@ TEST(SingleAgentTest, RingGraph) {
   WHCAPathFinder pf(graph, v);
   pf.FindPortionPath(&a);
 
-  std::list<Node*> expected_path = { node1, node2, node3, node4 };
+  Path expected_path = { 1, 2, 3, 4 };
 
   ASSERT_EQ(a.portion_path.size(), expected_path.size()) << "Paths are of unequal length";
   CheckPathsEquality(a.portion_path, expected_path);
@@ -196,7 +196,7 @@ TEST(SingleAgentTest, NoPathToGoal) {
   WHCAPathFinder pf(graph, v);
   pf.FindPortionPath(&a);
 
-  std::list<Node*> expected_path = { };
+  Path expected_path = { };
 
   ASSERT_EQ(a.portion_path.size(), expected_path.size()) << "Paths are of unequal length";
   CheckPathsEquality(a.portion_path, expected_path);
@@ -232,8 +232,76 @@ TEST(TwoAgentsTest, CrossGraph) {
   WHCAPathFinder pf(graph, v);
   pf.FindPaths();
 
-  std::list<Node*> a_expected_path = {node1, node3, node5};
-  std::list<Node*> b_expected_path = {node2, node2, node3, node4};
+  Path a_expected_path = {1, 3, 5};
+  Path b_expected_path = {2, 2, 3, 4};
+
+  ASSERT_EQ(a.portion_path.size(), a_expected_path.size()) << "a paths are of unequal length";
+  ASSERT_EQ(b.portion_path.size(), b_expected_path.size()) << "b paths are of unequal length";
+  CheckPathsEquality(a.portion_path,a_expected_path);
+  CheckPathsEquality(b.portion_path, b_expected_path);
+}
+
+TEST(TwoAgentsTest, LineGraphFirstInVectorIsA) {
+  Graph graph;
+    
+    Node* node1 = new Node(1, 1, 1);
+    Node* node2 = new Node(2, 1, 2);
+    Node* node3 = new Node(3, 1, 3);
+    Node* node4 = new Node(4, 1, 4);
+
+    graph.add_node(node1);
+    graph.add_node(node2);
+    graph.add_node(node3);
+    graph.add_node(node4);
+
+    graph.add_edge(node1, node2, 1);
+    graph.add_edge(node2, node3, 1);
+    graph.add_edge(node3, node4, 1);
+
+    Agent a("a", node2, node4);
+    Agent b("b", node1, node3);
+  vector<Agent*> v;
+  v.push_back(&a);
+  v.push_back(&b);
+  WHCAPathFinder pf(graph, v);
+  pf.FindPaths();
+
+  Path a_expected_path = {2, 3, 4};
+  Path b_expected_path = {1, 2, 3};
+
+  ASSERT_EQ(a.portion_path.size(), a_expected_path.size()) << "a paths are of unequal length";
+  ASSERT_EQ(b.portion_path.size(), b_expected_path.size()) << "b paths are of unequal length";
+  CheckPathsEquality(a.portion_path,a_expected_path);
+  CheckPathsEquality(b.portion_path, b_expected_path);
+}
+
+TEST(TwoAgentsTest, LineGraphFirstInVectorIsB) {
+  Graph graph;
+    
+    Node* node1 = new Node(1, 1, 1);
+    Node* node2 = new Node(2, 1, 2);
+    Node* node3 = new Node(3, 1, 3);
+    Node* node4 = new Node(4, 1, 4);
+
+    graph.add_node(node1);
+    graph.add_node(node2);
+    graph.add_node(node3);
+    graph.add_node(node4);
+
+    graph.add_edge(node1, node2, 1);
+    graph.add_edge(node2, node3, 1);
+    graph.add_edge(node3, node4, 1);
+
+    Agent a("a", node2, node4);
+    Agent b("b", node1, node3);
+  vector<Agent*> v;
+  v.push_back(&b);
+  v.push_back(&a);
+  WHCAPathFinder pf(graph, v);
+  pf.FindPaths();
+
+  Path a_expected_path = {2, 3, 4};
+  Path b_expected_path = {1, 2, 3};
 
   ASSERT_EQ(a.portion_path.size(), a_expected_path.size()) << "a paths are of unequal length";
   ASSERT_EQ(b.portion_path.size(), b_expected_path.size()) << "b paths are of unequal length";
@@ -277,10 +345,54 @@ TEST(ThreeAgentsTest, CrossGraph) {
   WHCAPathFinder pf(graph, v);
   pf.FindPaths();
 
-  std::list<Node*> a_expected_path = {node1, node3, node5};
-  std::list<Node*> b_expected_path = {node2, node2, node3, node4};
-  std::list<Node*> c_expected_path = {node0, node0, node0, node3, node6};
+  Path a_expected_path = {1, 3, 5};
+  Path b_expected_path = {2, 2, 3, 4};
+  Path c_expected_path = {0, 0, 0, 3, 6};
 
+  ASSERT_EQ(a.portion_path.size(), a_expected_path.size()) << "a paths are of unequal length";
+  ASSERT_EQ(b.portion_path.size(), b_expected_path.size()) << "b paths are of unequal length";
+  ASSERT_EQ(c.portion_path.size(), c_expected_path.size()) << "c paths are of unequal length";
+  CheckPathsEquality(a.portion_path,a_expected_path);
+  CheckPathsEquality(b.portion_path, b_expected_path);
+  CheckPathsEquality(c.portion_path, c_expected_path);
+}
+
+TEST(ThreeAgentsTest, LineGraph) {
+  Graph graph;
+
+    Node* node0 = new Node(0, 0, 1);
+    Node* node1 = new Node(1, 1, 1);
+    Node* node2 = new Node(2, 1 ,2);
+    Node* node3 = new Node(3, 2 ,1);
+    Node* node4 = new Node(4, 3, 1);
+    Node* node5 = new Node(5, 3, 2);
+
+    graph.add_node(node0);
+    graph.add_node(node1);
+    graph.add_node(node2);
+    graph.add_node(node3);
+    graph.add_node(node4);
+    graph.add_node(node5);
+
+    graph.add_edge(node0, node1, 1);
+    graph.add_edge(node1, node2, 1);
+    graph.add_edge(node2, node3, 1);
+    graph.add_edge(node3, node4, 1);
+    graph.add_edge(node4, node5, 1);
+
+    Agent a("a", node0, node3);
+    Agent b("b", node1, node4);
+    Agent c("c", node2, node5);
+  vector<Agent*> v;
+  v.push_back(&a);
+  v.push_back(&b);
+  v.push_back(&c);
+  WHCAPathFinder pf(graph, v);
+  pf.FindPaths();
+
+  Path a_expected_path = {0, 1, 2, 3};
+  Path b_expected_path = {1, 2, 3, 4};
+  Path c_expected_path = {2, 3, 4, 5};
 
   ASSERT_EQ(a.portion_path.size(), a_expected_path.size()) << "a paths are of unequal length";
   ASSERT_EQ(b.portion_path.size(), b_expected_path.size()) << "b paths are of unequal length";

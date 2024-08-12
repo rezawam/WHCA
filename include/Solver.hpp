@@ -4,6 +4,7 @@
 #include "Agent.hpp"
 
 #include <map>
+#include <stack>
 
 class WHCAPathFinder {
 private:
@@ -11,7 +12,7 @@ private:
     std::vector<Agent*> agents;
 	std::array<std::unordered_map<int, Agent*>, WINDOW_SIZE> reservations;
     std::map<std::pair<int, int>, Path> heuristic_cache;
-    std::vector<Node> waiting_list;
+    std::stack<Node> waiting_list;
 
 
 public:

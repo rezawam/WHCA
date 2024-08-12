@@ -53,7 +53,7 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
     std::priority_queue<Node*, std::vector<Node*>, std::greater<Node*>> open;
     std::unordered_set<Node*> closed;
 
-    waiting_list.clear();
+    // waiting_list.clear();
     graph.ClearParents();
     graph.SetInfHeuristic();
     graph.SetInfCost();
@@ -82,7 +82,7 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
             int path_size = current->count_parents() + 1;
             while (node != startNode) {
                 path_size--;
-                agent->portion_path.push_front(node);
+                agent->portion_path.push_front(node->get_id());
                 // Make reservations
                 reservations[path_size].insert({node->get_id(), agent});
                 node = node->get_parent();
@@ -90,7 +90,7 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
                     std::cout << "target = null";
             }
 
-            agent->portion_path.push_front(agent->start);
+            agent->portion_path.push_front(agent->start->get_id());
             reservations[0].insert({agent->start->get_id(), agent});
 
             std::cout << "Found partial path for " << agent->name << endl;
@@ -106,9 +106,9 @@ Path WHCAPathFinder::FindPortionPath(Agent* agent) {
         vector<Node*> neighbours = graph.GetNeighbors(current);
         for (Node* neighbour : neighbours) {
             if (!IsValidMove(neighbour, current_step + 1)) {
-                waiting_list.push_back(*current);
-                waiting_list.back().set_parent(current);
-                open.push(&waiting_list.back());
+                waiting_list.push(*current);
+                waiting_list.top().set_parent(current);
+                open.push(&waiting_list.top());
                 continue;
             }
                 
@@ -139,6 +139,8 @@ void WHCAPathFinder::FindPaths() {
 
     while(!all_agents_found_path) {
         for (auto& agent : agents) {
+            if (agent->isAtGoal())
+                continue;
             cout << "Find partial path for " << agent->name << endl;
             FindPortionPath(agent);
         }
@@ -148,8 +150,8 @@ void WHCAPathFinder::FindPaths() {
                 all_agents_found_path = false;
                 break;
             }
-            agents.erase(find(agents.begin(), agents.end(), agent));
             all_agents_found_path = true;
         }
+
     }
 }

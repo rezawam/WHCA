@@ -8,7 +8,7 @@
 
 using std::string, std::array;
 
-typedef std::list<Node*> Path;
+typedef std::list<int> Path; // stores id of nodes
 
 class Agent {
 public:
@@ -25,6 +25,6 @@ public:
     Node* start, *goal, *next, *current, *prev;
 
     bool isAtGoal() {
-        return (portion_path.back()->get_id() == goal->get_id());
+        return (portion_path.back() == goal->get_id());
     }
 };
